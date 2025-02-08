@@ -10,7 +10,6 @@ import 'package:founder_code_hr_app/res/const_files/app_const.dart';
 import 'package:founder_code_hr_app/res/const_files/color_const.dart';
 import 'package:founder_code_hr_app/res/const_files/no_internet_page.dart';
 import 'package:founder_code_hr_app/utils/routes/routes.dart';
-import 'package:founder_code_hr_app/view/bottom_pages_users/profile_screen.dart';
 import 'package:founder_code_hr_app/view_model/add_emp_view_model.dart';
 import 'package:founder_code_hr_app/view_model/auth_view_model.dart';
 import 'package:founder_code_hr_app/view_model/break_view_model.dart';
@@ -116,7 +115,6 @@ class _MyAppState extends State<MyApp> {
                 }
                 return null;
               },
-              // home: SizeAndColorPage(),
             ),
           );
   }

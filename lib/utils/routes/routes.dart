@@ -8,6 +8,7 @@ import 'package:founder_code_hr_app/view/bottom_pages_admin/attendence_History_p
 import 'package:founder_code_hr_app/view/bottom_pages_admin/emp_details.dart';
 import 'package:founder_code_hr_app/view/bottom_pages_users/bottom_nav_bar.dart';
 import 'package:founder_code_hr_app/view/bottom_pages_users/break_history.dart';
+import 'package:founder_code_hr_app/view/bottom_pages_users/map_view.dart';
 
 class Routers {
   static WidgetBuilder generateRoute(String routeName) {
@@ -28,6 +29,8 @@ class Routers {
         return (context) => const AttendenceHistoryPage();
         case RoutesName.adminEmpViewHome:
         return (context) => const AdminEmpViewHome();
+        case RoutesName.mapScreen:
+        return (context) => const MapScreen();
 
 
       default:

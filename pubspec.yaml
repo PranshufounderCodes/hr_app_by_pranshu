@@ -43,8 +43,10 @@ dependencies:
   image_picker:
   http:
   shared_preferences:
-  animations:
-  glassmorphism_ui:
+  google_maps_flutter:
+  local_auth: ^2.3.0
+
+
 
 
 

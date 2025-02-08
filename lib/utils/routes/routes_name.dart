@@ -7,4 +7,5 @@ class RoutesName {
   static const empDetails = '/empDetails';
   static const attendenceHistoryPage = '/attendenceHistoryPage';
   static const adminEmpViewHome = '/adminEmpViewHome';
+  static const mapScreen = '/mapScreen';
 }

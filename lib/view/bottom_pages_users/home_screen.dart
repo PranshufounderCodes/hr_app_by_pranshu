@@ -5,6 +5,7 @@ import 'package:founder_code_hr_app/res/const_files/app_btn.dart';
 import 'package:founder_code_hr_app/res/const_files/app_const.dart';
 import 'package:founder_code_hr_app/res/const_files/color_const.dart';
 import 'package:founder_code_hr_app/res/const_files/text_const.dart';
+import 'package:founder_code_hr_app/utils/routes/routes_name.dart';
 import 'package:founder_code_hr_app/utils/sneck_bar.dart';
 import 'package:founder_code_hr_app/view_model/location_view_model.dart';
 import 'package:founder_code_hr_app/view_model/profile_view_model.dart';
@@ -38,6 +39,7 @@ class _HomePageUserState extends State<HomePageUser> {
   @override
   void initState() {
     super.initState();
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<ProfileViewModel>(context, listen: false).profileApi(context);
     });
@@ -46,6 +48,7 @@ class _HomePageUserState extends State<HomePageUser> {
   @override
   Widget build(BuildContext context) {
     final locationProvider = Provider.of<LocationProvider>(context);
+
     final profileViewModel = Provider.of<ProfileViewModel>(context);
     final profile = profileViewModel.modelData;
 
@@ -128,12 +131,16 @@ class _HomePageUserState extends State<HomePageUser> {
                             const CircularProgressIndicator(
                               color: AppColor.primary,
                             ),
-                          if (!locationProvider.hasPunchedIn &&
+                            if (profile.data!.punchInStatus == 1 &&
                               !locationProvider.isProcessing)
                             ButtonConst(
                               loading: locationProvider.isLoading,
                               onTap: locationProvider.isInRange
-                                  ? () => locationProvider.punchIn()
+                                  ? () => locationProvider.punchIn().then((_) {
+                                        locationProvider.punchApi(
+                                          context,
+                                        );
+                                      })
                                   : () {
                                       showCustomSnackBar(
                                           "You are not in range!", context);
@@ -148,12 +155,14 @@ class _HomePageUserState extends State<HomePageUser> {
                                   BorderRadius.circular(circularBorderRadius5),
                               label: "Punch In",
                             ),
-                          if (locationProvider.hasPunchedIn &&
+                            if (profile.data!.punchInStatus == 2 &&
                               !locationProvider.isProcessing)
                             ButtonConst(
                               loading: locationProvider.isLoading,
                               onTap: locationProvider.isInRange
-                                  ? () => locationProvider.punchOut()
+                                  ? () => locationProvider.punchOut().then((_) {
+                                        locationProvider.punchApi(context);
+                                      })
                                   : () {
                                       showCustomSnackBar(
                                           "You are not in range!", context);
@@ -229,7 +238,7 @@ class _HomePageUserState extends State<HomePageUser> {
                                 fontSize: textFontSize15,
                               ),
                               TextConst(
-                                title: locationProvider.statusPunchIn,
+                                title: locationProvider.statusPunchIn.isEmpty ?"Please Punch In":locationProvider.statusPunchIn,
                                 fontSize: textFontSize15,
                               ),
                             ],
@@ -255,7 +264,7 @@ class _HomePageUserState extends State<HomePageUser> {
                                 fontSize: textFontSize15,
                               ),
                               TextConst(
-                                title: locationProvider.statusPunchOut,
+                                title: locationProvider.statusPunchOut.isEmpty ?"Please Punch Out":locationProvider.statusPunchOut,
                                 fontSize: textFontSize15,
                               ),
                             ],
@@ -276,7 +285,7 @@ class _HomePageUserState extends State<HomePageUser> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: const Padding(
+                  child: Padding(
                     padding: EdgeInsets.all(12.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -293,7 +302,7 @@ class _HomePageUserState extends State<HomePageUser> {
                             ),
                             Spacer(),
                             TextConst(
-                              title: "25 Days",
+                              title: "${profile.data!.totalComingDays} Days",
                               fontSize: textFontSize15,
                               fontWeight: FontWeight.w500,
                               color: Colors.black54,
@@ -313,7 +322,7 @@ class _HomePageUserState extends State<HomePageUser> {
                             ),
                             Spacer(),
                             TextConst(
-                              title: "5 Days",
+                              title: "${profile.data!.totalAbsentDays} Days",
                               fontSize: textFontSize15,
                               fontWeight: FontWeight.w500,
                               color: Colors.black54,
@@ -333,19 +342,36 @@ class _HomePageUserState extends State<HomePageUser> {
                             ),
                             Spacer(),
                             TextConst(
-                              title: "2 Days",
+                              title: "${profile.data!.totalHalfDays} Days",
                               fontSize: textFontSize15,
                               fontWeight: FontWeight.w500,
                               color: Colors.black54,
                             ),
+
                           ],
                         ),
+
                       ],
                     ),
                   ),
                 ),
+
               ),
+        Align(
+          alignment: Alignment.center,
+          child: ButtonConst(
+            onTap: (){
+              Navigator.pushNamed(context, RoutesName.mapScreen);
+            },
+            width: screenWidth*0.2,
+            height: screenHeight*0.04,
+            label: "View Map",
+            fontWeight: FontWeight.bold,
+            fontSize: textFontSize12,
+          ),
+        )
             ]),
     );
   }
 }
+

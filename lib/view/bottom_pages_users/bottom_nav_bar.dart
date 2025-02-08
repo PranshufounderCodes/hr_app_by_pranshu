@@ -24,6 +24,7 @@ class _UserDashboardViewState extends State<UserDashboardView> {
 
   final List<Widget> _pages = [
     const HomePageUser(),
+
     const HistoryPage(),
     const BreakPage(),
     const ProfilePage(),

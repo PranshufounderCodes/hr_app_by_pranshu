@@ -12,6 +12,12 @@
         android:label="founder_code_hr_app"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+
+
+
+        <meta-data android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyCOqfJTgg1Blp1GIeh7o8W8PC1w5dDyhWI"/>
+
         <activity
             android:name=".MainActivity"
             android:exported="true"

@@ -1,6 +1,6 @@
 class ProfileModel {
-  bool? success;
-  String? message;
+  dynamic success;
+  dynamic message;
   Data? data;
 
   ProfileModel({this.success, this.message, this.data});
@@ -23,20 +23,24 @@ class ProfileModel {
 }
 
 class Data {
-  int? id;
-  String? employeeId;
-  String? name;
-  String? email;
-  String? country;
-  String? phone;
-  String? designation;
-  String? department;
-  String? shift;
-  String? address;
-  String? profileImage;
-  String? password;
-  int? status;
-  int? role;
+  dynamic id;
+  dynamic employeeId;
+  dynamic name;
+  dynamic email;
+  dynamic country;
+  dynamic phone;
+  dynamic designation;
+  dynamic department;
+  dynamic shift;
+  dynamic address;
+  dynamic profileImage;
+  dynamic password;
+  dynamic status;
+  dynamic role;
+  dynamic totalComingDays;
+  dynamic totalAbsentDays;
+  dynamic totalHalfDays;
+  dynamic punchInStatus;
 
   Data(
       {this.id,
@@ -52,7 +56,11 @@ class Data {
         this.profileImage,
         this.password,
         this.status,
-        this.role});
+        this.role,
+        this.totalComingDays,
+        this.totalAbsentDays,
+        this.totalHalfDays,
+        this.punchInStatus});
 
   Data.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -69,6 +77,10 @@ class Data {
     password = json['password'];
     status = json['status'];
     role = json['role'];
+    totalComingDays = json['total_coming_days'];
+    totalAbsentDays = json['total_absent_days'];
+    totalHalfDays = json['total_half_days'];
+    punchInStatus = json['punch_in_status'];
   }
 
   Map<String, dynamic> toJson() {
@@ -87,6 +99,10 @@ class Data {
     data['password'] = password;
     data['status'] = status;
     data['role'] = role;
+    data['total_coming_days'] = totalComingDays;
+    data['total_absent_days'] = totalAbsentDays;
+    data['total_half_days'] = totalHalfDays;
+    data['punch_in_status'] = punchInStatus;
     return data;
   }
 }

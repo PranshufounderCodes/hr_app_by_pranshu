@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:founder_code_hr_app/model/emp_history_model.dart';
 import 'package:founder_code_hr_app/repo/admin_emp_repo.dart';
 import 'package:founder_code_hr_app/utils/sneck_bar.dart';
 import 'package:founder_code_hr_app/view/bottom_pages_admin/emp_details.dart';
@@ -133,6 +134,53 @@ class AddEmpViewModel with ChangeNotifier {
       }
     }).onError((error, stackTrace) {
       setLoading(false);
+      if (kDebugMode) {
+        print('error: $error');
+      }
+    });
+  }
+
+//   Emp History Api
+
+  bool _loadingEMPH = false;
+
+  bool get loadingEMPH => _loadingEMPH;
+
+  setLoadingEMPH(bool value) {
+    _loadingEMPH = value;
+    notifyListeners();
+  }
+
+  EmpHistoryModel? _empHistoryModelData;
+  EmpHistoryModel? get empHistoryModelData => _empHistoryModelData;
+
+  setEmpHistoryModelData(EmpHistoryModel value) {
+    _empHistoryModelData = value;
+    notifyListeners();
+  }
+
+  Future<void> empHistoryApi(context, String searchCon) async {
+    setLoadingEMPH(true);
+    Map data = {"name": searchCon};
+
+    print(data);
+    _adminEmpRepo.empHistoryApi(data).then((value) {
+      if (value.success == true) {
+        setLoadingEMPH(false);
+        showCustomSnackBar(
+          value.message,
+          context,
+        );
+        setEmpHistoryModelData(value);
+      } else {
+        showCustomSnackBar(
+          value.success,
+          context,
+        );
+        setLoadingEMPH(false);
+      }
+    }).onError((error, stackTrace) {
+      setLoadingEMPH(false);
       if (kDebugMode) {
         print('error: $error');
       }
