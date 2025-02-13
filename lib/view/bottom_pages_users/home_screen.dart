@@ -52,6 +52,49 @@ class _HomePageUserState extends State<HomePageUser> {
     final profileViewModel = Provider.of<ProfileViewModel>(context);
     final profile = profileViewModel.modelData;
 
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (locationProvider.isPermissionDenied) {
+        final locationProviderRef =
+            Provider.of<LocationProvider>(context, listen: false);
+
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) => AlertDialog(
+            title: const Text(
+              "Location Permission Required!",
+              style: TextStyle(
+                  fontSize: 18, fontWeight: FontWeight.bold, color: Colors.red),
+            ),
+            content:
+                const Text("Please grant location permission to continue."),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text("Cancel"),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  Navigator.of(context).pop();
+
+                  try {
+                    await Future.delayed(Duration(milliseconds: 300));
+
+                    await locationProviderRef.checkAndTrackLocation();
+                  } catch (e, str) {
+                    throw (e, str);
+                  }
+                },
+                child: const Text("Grant Permission"),
+              ),
+            ],
+          ),
+        );
+      }
+    });
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -131,7 +174,7 @@ class _HomePageUserState extends State<HomePageUser> {
                             const CircularProgressIndicator(
                               color: AppColor.primary,
                             ),
-                            if (profile.data!.punchInStatus == 1 &&
+                          if (profile.data!.punchInStatus == 1 &&
                               !locationProvider.isProcessing)
                             ButtonConst(
                               loading: locationProvider.isLoading,
@@ -155,7 +198,7 @@ class _HomePageUserState extends State<HomePageUser> {
                                   BorderRadius.circular(circularBorderRadius5),
                               label: "Punch In",
                             ),
-                            if (profile.data!.punchInStatus == 2 &&
+                          if (profile.data!.punchInStatus == 2 &&
                               !locationProvider.isProcessing)
                             ButtonConst(
                               loading: locationProvider.isLoading,
@@ -238,7 +281,9 @@ class _HomePageUserState extends State<HomePageUser> {
                                 fontSize: textFontSize15,
                               ),
                               TextConst(
-                                title: locationProvider.statusPunchIn.isEmpty ?"Please Punch In":locationProvider.statusPunchIn,
+                                title: locationProvider.statusPunchIn.isEmpty
+                                    ? "Please Punch In"
+                                    : locationProvider.statusPunchIn,
                                 fontSize: textFontSize15,
                               ),
                             ],
@@ -264,7 +309,9 @@ class _HomePageUserState extends State<HomePageUser> {
                                 fontSize: textFontSize15,
                               ),
                               TextConst(
-                                title: locationProvider.statusPunchOut.isEmpty ?"Please Punch Out":locationProvider.statusPunchOut,
+                                title: locationProvider.statusPunchOut.isEmpty
+                                    ? "Please Punch Out"
+                                    : locationProvider.statusPunchOut,
                                 fontSize: textFontSize15,
                               ),
                             ],
@@ -347,31 +394,27 @@ class _HomePageUserState extends State<HomePageUser> {
                               fontWeight: FontWeight.w500,
                               color: Colors.black54,
                             ),
-
                           ],
                         ),
-
                       ],
                     ),
                   ),
                 ),
-
               ),
-        Align(
-          alignment: Alignment.center,
-          child: ButtonConst(
-            onTap: (){
-              Navigator.pushNamed(context, RoutesName.mapScreen);
-            },
-            width: screenWidth*0.2,
-            height: screenHeight*0.04,
-            label: "View Map",
-            fontWeight: FontWeight.bold,
-            fontSize: textFontSize12,
-          ),
-        )
+              Align(
+                alignment: Alignment.center,
+                child: ButtonConst(
+                  onTap: () {
+                    Navigator.pushNamed(context, RoutesName.mapScreen);
+                  },
+                  width: screenWidth * 0.2,
+                  height: screenHeight * 0.04,
+                  label: "View Map",
+                  fontWeight: FontWeight.bold,
+                  fontSize: textFontSize12,
+                ),
+              )
             ]),
     );
   }
 }
-

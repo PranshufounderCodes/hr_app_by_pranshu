@@ -6,5 +6,7 @@ class ApiUrl {
   static const addEmpUrl = "${baseUrl}addEmployee";
   static const empHistoryUrl = "${baseUrl}getEmployees";
   static const punchUrl = "${baseUrl}punchInOut";
+  static const breakUrl = "${baseUrl}storeBreaks";
+  static const breakHistoryUrl = "${baseUrl}breakHistory";
 
 }

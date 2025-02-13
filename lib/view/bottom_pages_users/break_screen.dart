@@ -21,12 +21,12 @@ class BreakPage extends StatefulWidget {
 }
 
 class BreakPageState extends State<BreakPage> {
-  final TextEditingController _purposeController = TextEditingController();
+
   String? selectedApprover; // Dropdown selected value
   Timer? _timer;
   int elapsedSeconds = 0;
 
-  List<String> approvers = ["Manager", "HR", "Team Lead"];
+
 
   @override
   Widget build(BuildContext context) {
@@ -97,7 +97,7 @@ class BreakPageState extends State<BreakPage> {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: TextField(
-                    controller: _purposeController,
+                    controller: breakProvider.purposeController,
                     maxLines: 3,
                     decoration: const InputDecoration(
                       border: InputBorder.none,
@@ -119,7 +119,7 @@ class BreakPageState extends State<BreakPage> {
               spaceHeight15,
 
               // Timer Display
-              _infoTile("Break Duration", breakProvider.lastBreakDuration),
+              // _infoTile("Break Duration", breakProvider.lastBreakDuration),
 
               spaceHeight15,
               if (breakProvider.isOnBreak)
@@ -146,21 +146,25 @@ class BreakPageState extends State<BreakPage> {
               spaceHeight50,
               if (locationProvider.isProcessing)
                 const CircularProgressIndicator(color: AppColor.primary),
-              //
-              // if (!locationProvider.hasPunchedIn &&
-              //     !locationProvider.isProcessing)
                 ButtonConst(
                   onTap: () {
                     if (locationProvider.isInRange) {
                       if (breakProvider.isOnBreak) {
-                        // _stopTimer();
                         breakProvider.endBreak();
-                        _purposeController.clear();
+                        breakProvider.purposeController.clear();
+
+                        selectedApprover = "Select Approver";
+                        breakProvider.breakApi(selectedApprover!, context).then((_) {
+                          breakProvider.clearAllFields();
+                        }).catchError((error) {
+                          print('Error occurred: $error');
+                        });
+
                       } else {
-                        if (_purposeController.text.isNotEmpty &&
+                        if (breakProvider.purposeController.text.isNotEmpty &&
                             selectedApprover != null) {
-                          // _startTimer();
-                          breakProvider.startBreak(_purposeController.text);
+                          breakProvider.startBreak(breakProvider.purposeController.text);
+                          breakProvider.breakApi(selectedApprover!,context);
                         } else {
                           showCustomSnackBar(
                             selectedApprover == null
@@ -186,31 +190,9 @@ class BreakPageState extends State<BreakPage> {
     );
   }
 
-  // void _startTimer() {
-  //   setState(() {
-  //     elapsedSeconds = 0;
-  //   });
-  //
-  //   _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-  //     setState(() {
-  //       elapsedSeconds++;
-  //     });
-  //   });
-  // }
-  //
-  // void _stopTimer() {
-  //   _timer?.cancel();
-  //   setState(() {});
-  // }
-
-  // String _formatDuration(int seconds) {
-  //   final hours = (seconds ~/ 3600).toString().padLeft(2, '0');
-  //   final minutes = ((seconds % 3600) ~/ 60).toString().padLeft(2, '0');
-  //   final secs = (seconds % 60).toString().padLeft(2, '0');
-  //   return "$hours:$minutes:$secs";
-  // }
 
   Widget _infoTile(String title, String value) {
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -223,11 +205,13 @@ class BreakPageState extends State<BreakPage> {
   @override
   void dispose() {
     _timer?.cancel();
-    _purposeController.dispose();
+    final breakProvider = Provider.of<BreakProvider>(context,listen: false);
+    breakProvider.purposeController.dispose();
     super.dispose();
   }
 
   void _showApproverPopup(BuildContext context) {
+    final breakProvider = Provider.of<BreakProvider>(context,listen: false);
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -235,7 +219,7 @@ class BreakPageState extends State<BreakPage> {
           title: const Text("Select Approver"),
           content: Column(
             mainAxisSize: MainAxisSize.min,
-            children: approvers.map((approver) {
+            children: breakProvider.approvers.map((approver) {
               return ListTile(
                 title: Text(approver),
                 onTap: () {
